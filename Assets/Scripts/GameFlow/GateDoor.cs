@@ -38,8 +38,7 @@ public class GateDoor : MonoBehaviour, IInteractable
             return;
         }
 
-        CollegeGameManager.Instance.ShowMessage("You escaped the college. You win!");
-        Time.timeScale = 0f;
+        CollegeGameManager.Instance.WinGame();
     }
 
     private void SetGateVisuals()

@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class CollegeGameManager : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class CollegeGameManager : MonoBehaviour
     [Header("UI")]
     public TMP_Text coinsText;
     public TMP_Text messageText;
+    public GameObject winPanel;
 
     [Header("Gate")]
     public GateDoor mainGate;
@@ -31,6 +33,13 @@ public class CollegeGameManager : MonoBehaviour
 
     private void Start()
     {
+        Time.timeScale = 1f;
+
+        if (winPanel != null)
+        {
+            winPanel.SetActive(false);
+        }
+
         UpdateUI();
         ShowMessage("Collect trash and put it in the dustbin.");
     }
@@ -59,6 +68,24 @@ public class CollegeGameManager : MonoBehaviour
     public bool HasEnoughCoins()
     {
         return currentCoins >= coinsNeededToUnlockGate;
+    }
+
+    public void WinGame()
+    {
+        ShowMessage("You escaped the college. You win!");
+
+        if (winPanel != null)
+        {
+            winPanel.SetActive(true);
+        }
+
+        Time.timeScale = 0f;
+    }
+
+    public void RestartGame()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void ShowMessage(string message)
