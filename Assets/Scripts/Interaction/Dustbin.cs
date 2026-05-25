@@ -26,9 +26,14 @@ public class Dustbin : MonoBehaviour, IInteractable
         playerInventory.RemoveTrash();
         CollegeGameManager.Instance.AddCoins(bonusCoinsPerTrash);
 
-        if (CollegeGameManager.Instance.HasEnoughCoins())
+        if (ObjectiveManager.Instance != null)
         {
-            CollegeGameManager.Instance.ShowMessage("Trash deposited. You earned 1 bonus coin. Main gate unlocked!");
+            ObjectiveManager.Instance.AddTrashDeposit();
+        }
+
+        if (ObjectiveManager.Instance != null && ObjectiveManager.Instance.AreObjectivesCompleted())
+        {
+            CollegeGameManager.Instance.ShowMessage("Trash deposited. Objectives complete. Main gate unlocked!");
         }
         else
         {

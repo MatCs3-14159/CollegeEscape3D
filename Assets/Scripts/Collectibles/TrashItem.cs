@@ -28,9 +28,9 @@ public class TrashItem : MonoBehaviour, IInteractable
 
         CollegeGameManager.Instance.AddCoins(coinsOnPickup);
 
-        if (CollegeGameManager.Instance.HasEnoughCoins())
+        if (ObjectiveManager.Instance != null && ObjectiveManager.Instance.AreObjectivesCompleted())
         {
-            CollegeGameManager.Instance.ShowMessage("Trash picked up. You earned 1 coin. Main gate unlocked!");
+            CollegeGameManager.Instance.ShowMessage("Trash picked up. Objectives complete. Main gate unlocked!");
         }
         else
         {

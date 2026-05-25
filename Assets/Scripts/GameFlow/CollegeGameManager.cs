@@ -20,6 +20,9 @@ public class CollegeGameManager : MonoBehaviour
     [Header("Gate")]
     public GateDoor mainGate;
 
+    [Header("Objectives")]
+    public ObjectiveManager objectiveManager;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -41,6 +44,7 @@ public class CollegeGameManager : MonoBehaviour
         }
 
         UpdateUI();
+        UpdateObjectiveProgress();
         ShowMessage("Collect trash and put it in the dustbin.");
     }
 
@@ -48,21 +52,7 @@ public class CollegeGameManager : MonoBehaviour
     {
         currentCoins += amount;
         UpdateUI();
-
-        if (currentCoins >= coinsNeededToUnlockGate)
-        {
-            ShowMessage("Main gate unlocked!");
-
-            if (mainGate != null)
-            {
-                mainGate.UnlockGate();
-            }
-        }
-        else
-        {
-            int remaining = coinsNeededToUnlockGate - currentCoins;
-            ShowMessage("You earned coins. Need " + remaining + " more.");
-        }
+        UpdateObjectiveProgress();
     }
 
     public bool HasEnoughCoins()
@@ -101,6 +91,14 @@ public class CollegeGameManager : MonoBehaviour
         if (coinsText != null)
         {
             coinsText.text = "Coins: " + currentCoins + " / " + coinsNeededToUnlockGate;
+        }
+    }
+
+    private void UpdateObjectiveProgress()
+    {
+        if (objectiveManager != null)
+        {
+            objectiveManager.SetCoinProgress(currentCoins);
         }
     }
 }
