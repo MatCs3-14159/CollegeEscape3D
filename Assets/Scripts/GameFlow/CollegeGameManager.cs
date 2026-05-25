@@ -69,6 +69,8 @@ public class CollegeGameManager : MonoBehaviour
             winPanel.SetActive(true);
         }
 
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         Time.timeScale = 0f;
     }
 

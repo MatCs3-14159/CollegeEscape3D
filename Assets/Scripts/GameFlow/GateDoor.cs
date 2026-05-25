@@ -43,7 +43,7 @@ public class GateDoor : MonoBehaviour, IInteractable
 
     private void SetGateVisuals()
     {
-        if (closedGateObject != null)
+        if (closedGateObject != null && closedGateObject != gameObject)
         {
             closedGateObject.SetActive(!isUnlocked);
         }
