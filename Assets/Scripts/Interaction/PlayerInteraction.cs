@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Linq;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -7,6 +8,9 @@ public class PlayerInteraction : MonoBehaviour
     public Camera playerCamera;
     public float interactDistance = 3f;
     public LayerMask interactLayer = -1;
+
+    [Header("Nearby Interaction")]
+    public float nearbyInteractRadius = 2.5f;
 
     [Header("UI")]
     public TMP_Text interactionText;
@@ -40,6 +44,13 @@ public class PlayerInteraction : MonoBehaviour
 
     private IInteractable GetCurrentInteractable()
     {
+        IInteractable nearbyInteractable = GetNearestNearbyInteractable();
+
+        if (nearbyInteractable != null)
+        {
+            return nearbyInteractable;
+        }
+
         if (playerCamera == null)
         {
             return null;
@@ -47,11 +58,36 @@ public class PlayerInteraction : MonoBehaviour
 
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactLayer))
+        RaycastHit[] hits = Physics.RaycastAll(ray, interactDistance, interactLayer);
+        hits = hits.OrderBy(hit => hit.distance).ToArray();
+
+        foreach (RaycastHit hit in hits)
         {
-            return hit.collider.GetComponentInParent<IInteractable>();
+            if (hit.collider.transform.IsChildOf(transform))
+            {
+                continue;
+            }
+
+            IInteractable interactable = hit.collider.GetComponentInParent<IInteractable>();
+
+            if (interactable != null)
+            {
+                return interactable;
+            }
         }
 
         return null;
+    }
+
+    private IInteractable GetNearestNearbyInteractable()
+    {
+        Collider[] nearbyColliders = Physics.OverlapSphere(transform.position, nearbyInteractRadius, interactLayer);
+
+        return nearbyColliders
+            .Where(colliderHit => !colliderHit.transform.IsChildOf(transform))
+            .Select(colliderHit => colliderHit.GetComponentInParent<IInteractable>())
+            .Where(interactable => interactable != null)
+            .OrderBy(interactable => Vector3.Distance(transform.position, ((MonoBehaviour)interactable).transform.position))
+            .FirstOrDefault();
     }
 }
